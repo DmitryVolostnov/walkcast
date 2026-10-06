@@ -1,0 +1,35 @@
+{
+  "listener": {
+    "name": "Имя",
+    "about": "Пара фраз о себе: чем занимаешься, что важно. Помогает ведущей подбирать темы.",
+    "language": "русский",
+    "learn_language": "английский"
+  },
+  "sources": [
+    {
+      "person": "Имя",
+      "type": "claude-code",
+      "path": "~/.claude/projects",
+      "enabled": true
+    },
+    {
+      "person": "Партнёр",
+      "type": "text-folder",
+      "path": "~/Library/Mobile Documents/com~apple~CloudDocs/WalkCast/sources/partner",
+      "enabled": false
+    }
+  ],
+  "fresh_hours": 24,
+  "context_days": 7,
+  "digest_max_chars": 80000,
+  "tts": {
+    "model": "gpt-4o-mini-tts",
+    "voice": "nova",
+    "instructions": "Ты ведущая авторского подкаста на русском языке. Говори живо, в бодром естественном темпе, как умный друг на прогулке: без дикторского пафоса и без затянутых пауз, с лёгкой улыбкой в голосе там, где шутка.",
+    "speed": 1.0,
+    "chunk_chars": 1500,
+    "parallel": 4
+  },
+  "icloud_dir": "~/Library/Mobile Documents/com~apple~CloudDocs/WalkCast",
+  "key_file": "~/.config/walkcast/openai_key"
+}

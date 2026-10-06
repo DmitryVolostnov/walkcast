@@ -1,0 +1,12 @@
+# личное: конфиг, выпуски, дайджесты, история
+pipeline/config.json
+pipeline/episodes/
+pipeline/state/
+__pycache__/
+
+# сборка
+app/build/
+**/xcuserdata/
+
+.DS_Store
+.claude/

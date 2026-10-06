@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WalkCast">
+<meta name="theme-color" content="#f2f2f7">
+<link rel="apple-touch-icon" href="../icon.png">
+<link rel="icon" href="../icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>WalkCast — плеер</title>
+<style>
+  :root { --bg:#f2f2f7; --card:#fff; --text:#000; --sec:#8a8a8e; --tint:#0a72ff; --fill:#e9e9ee; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#000; --card:#1c1c1e; --text:#fff; --sec:#8e8e93; --fill:#2c2c2e; } }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.35 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+         padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 120px); }
+  h1 { font-size:34px; margin:28px 4px 16px; letter-spacing:-.5px; display:flex; align-items:center; justify-content:space-between; }
+  button { font:inherit; color:var(--tint); background:none; border:0; padding:0; cursor:pointer; }
+  .card { background:var(--card); border-radius:22px; padding:16px 18px; margin-bottom:12px; }
+  .date { color:var(--sec); font-size:13px; display:flex; justify-content:space-between; }
+  .title { font-weight:600; margin:4px 0 6px; }
+  .topic { color:var(--sec); font-size:15px; }
+  .bar { height:4px; background:var(--fill); border-radius:2px; margin-top:10px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:var(--tint); }
+  .empty { text-align:center; color:var(--sec); padding:60px 20px; }
+  .add { background:var(--tint); color:#fff; border-radius:14px; padding:12px 20px; font-weight:600; }
+  .mini { position:fixed; left:16px; right:16px; bottom:calc(env(safe-area-inset-bottom) + 12px); background:var(--card);
+          border-radius:18px; padding:14px 18px; display:none; align-items:center; gap:12px; box-shadow:0 6px 30px rgba(0,0,0,.12); }
+  .mini .t { flex:1; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sheet { position:fixed; inset:0; background:var(--bg); overflow-y:auto; transform:translateY(100%); transition:transform .3s; padding:calc(env(safe-area-inset-top) + 16px) 22px 40px; }
+  .sheet.open { transform:none; }
+  .sheet h2 { text-align:center; font-size:22px; margin:12px 0 22px; }
+  input[type=range] { width:100%; accent-color:var(--tint); }
+  .times { display:flex; justify-content:space-between; color:var(--sec); font:12px ui-monospace, monospace; }
+  .controls { display:flex; justify-content:center; align-items:center; gap:44px; margin:22px 0; font-size:20px; font-weight:600; }
+  .play { width:76px; height:76px; border-radius:50%; background:var(--tint); color:#fff; font-size:30px; }
+  .seg { display:flex; background:var(--fill); border-radius:10px; padding:2px; }
+  .seg button { flex:1; padding:7px 0; border-radius:8px; color:var(--text); font-size:14px; }
+  .seg button.on { background:var(--card); box-shadow:0 1px 3px rgba(0,0,0,.12); font-weight:600; }
+  .section { font-weight:600; margin:26px 0 8px; }
+  .ch { display:flex; gap:12px; width:100%; text-align:left; color:var(--text); padding:9px 0; }
+  .ch span { color:var(--sec); font:13px ui-monospace, monospace; width:44px; padding-top:2px; }
+  .ch.on { color:var(--tint); font-weight:600; }
+  .cand { display:flex; gap:12px; width:100%; text-align:left; color:var(--text); background:var(--fill); border-radius:12px; padding:12px; margin-bottom:8px; }
+  .cand.on { background:color-mix(in srgb, var(--tint) 14%, transparent); }
+  .cand b { display:block; font-size:15px; } .cand small { color:var(--sec); font-size:13px; }
+  .dot { width:22px; height:22px; border-radius:50%; border:2px solid var(--sec); flex:none; margin-top:1px; }
+  .cand.on .dot { background:var(--tint); border-color:var(--tint); }
+  .hint { color:var(--sec); font-size:13px; margin-top:8px; }
+</style>
+</head>
+<body>
+<h1>WalkCast <button id="addBtn" title="Добавить выпуски">＋</button></h1>
+<input id="files" type="file" accept=".mp3,.json,audio/mpeg,application/json" multiple hidden>
+<div id="list"></div>
+
+<div class="mini" id="mini"><div class="t" id="miniTitle"></div><button id="miniPlay">❚❚</button></div>
+
+<div class="sheet" id="sheet">
+  <button id="close">Закрыть</button>
+  <h2 id="pTitle"></h2>
+  <input type="range" id="seek" min="0" max="1" step="1" value="0">
+  <div class="times"><span id="tNow">0:00</span><span id="tLeft">-0:00</span></div>
+  <div class="controls">
+    <button id="back">−15</button><button class="play" id="play">▶</button><button id="fwd">+30</button>
+  </div>
+  <div class="seg" id="rates"></div>
+  <div id="chapters"></div>
+  <div id="tomorrow"></div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+// Выпуски хранятся в IndexedDB: на прогулке плеер работает без сети.
+const $ = id => document.getElementById(id);
+const audio = $('audio');
+let db, episodes = [], current = null;
+
+const open = indexedDB.open('walkcast', 1);
+open.onupgradeneeded = () => open.result.createObjectStore('episodes', { keyPath: 'id' });
+open.onsuccess = () => { db = open.result; load(); };
+
+function tx(mode) { return db.transaction('episodes', mode).objectStore('episodes'); }
+function load() {
+  const req = tx('readonly').getAll();
+  req.onsuccess = () => { episodes = req.result.filter(e => e.audio).sort((a, b) => b.id.localeCompare(a.id)); render(); };
+}
+
+$('addBtn').onclick = () => $('files').click();
+$('files').onchange = async e => {
+  const byId = {};
+  for (const f of e.target.files) {
+    const id = f.name.replace(/\.(mp3|json)$/i, '');
+    byId[id] = byId[id] || {};
+    if (/\.json$/i.test(f.name)) byId[id].meta = JSON.parse(await f.text());
+    else byId[id].audio = f;
+  }
+  for (const [id, v] of Object.entries(byId)) {
+    const old = episodes.find(x => x.id === id) || { id };
+    tx('readwrite').put({ ...old, ...(v.audio && { audio: v.audio }), ...(v.meta && { meta: v.meta }) });
+  }
+  setTimeout(load, 300);
+  e.target.value = '';
+};
+
+const fmt = t => { t = Math.max(0, Math.floor(t || 0)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
+const pos = id => +localStorage.getItem('pos-' + id) || 0;
+const dateLabel = id => { const d = new Date(id + 'T12:00'); return isNaN(d) ? id : d.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }); };
+const mainTopics = m => (m?.topics || []).filter(t => !['Вступление', 'Напоследок'].includes(t));
+
+function render() {
+  const list = $('list');
+  if (!episodes.length) {
+    list.innerHTML = `<div class="empty"><p>Пока пусто.</p><p>Нажми «Добавить» и выбери в Файлах → iCloud Drive → WalkCast файлы выпуска: <b>.mp3</b> и <b>.json</b> с той же датой.</p><button class="add" onclick="$('files').click()">Добавить выпуски</button></div>`;
+    return;
+  }
+  list.innerHTML = episodes.map(e => {
+    const m = e.meta || {}, d = m.duration || 0, p = d ? pos(e.id) / d : 0, done = localStorage.getItem('done-' + e.id);
+    return `<div class="card" onclick="play('${e.id}')">
+      <div class="date"><span>${dateLabel(e.id)}</span><span>${done ? '✓' : d ? Math.round(d / 60) + ' мин' : ''}</span></div>
+      <div class="title">${m.title || e.id}</div>
+      ${mainTopics(m).map(t => `<div class="topic">• ${t}</div>`).join('')}
+      ${p > 0 && !done ? `<div class="bar"><i style="width:${p * 100}%"></i></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+window.play = id => {
+  const e = episodes.find(x => x.id === id);
+  if (current?.id !== id) {
+    current = e;
+    audio.src = URL.createObjectURL(e.audio);
+    audio.currentTime = pos(id);
+    renderSheet();
+  }
+  audio.playbackRate = rate();
+  audio.play();
+  $('sheet').classList.add('open');
+};
+
+const RATES = [1, 1.1, 1.25, 1.5];
+const rate = () => +localStorage.getItem('rate') || 1;
+function renderSheet() {
+  const m = current.meta || {};
+  $('pTitle').textContent = m.title || current.id;
+  $('miniTitle').textContent = m.title || current.id;
+  $('mini').style.display = 'flex';
+  $('rates').innerHTML = RATES.map(r => `<button class="${r === rate() ? 'on' : ''}" onclick="setRate(${r})">${r}×</button>`).join('');
+  $('chapters').innerHTML = m.chapters?.length ? `<div class="section">Темы</div>` + m.chapters.map((c, i) =>
+    `<button class="ch" data-i="${i}" onclick="audio.currentTime=${c.start}"><span>${fmt(c.start)}</span>${c.title}</button>`).join('') : '';
+  renderTomorrow();
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: m.title || current.id, artist: 'WalkCast', artwork: [{ src: '../icon.png', sizes: '1024x1024' }] });
+  }
+}
+window.setRate = r => { localStorage.setItem('rate', r); audio.playbackRate = r; renderSheet(); };
+
+// «О чём поговорим завтра?» — веб не может писать в iCloud сам, поэтому отдаём tomorrow.json через «Поделиться → Сохранить в Файлы».
+function renderTomorrow() {
+  const next = current.meta?.next || [];
+  if (!next.length) { $('tomorrow').innerHTML = ''; return; }
+  const picked = JSON.parse(localStorage.getItem('picks-' + current.id) || '[]');
+  $('tomorrow').innerHTML = `<div class="section">О чём поговорим завтра?</div>` +
+    next.map((c, i) => `<button class="cand ${picked.includes(i) ? 'on' : ''}" onclick="togglePick(${i})"><div class="dot"></div><div><b>${c.title}</b><small>${c.teaser}</small></div></button>`).join('') +
+    `<button class="add" style="margin-top:8px" onclick="savePicks()" ${picked.length ? '' : 'disabled'}>Сохранить выбор</button>
+     <div class="hint">Сохрани tomorrow.json в iCloud Drive → WalkCast — Мак учтёт его в следующем выпуске.</div>`;
+}
+window.togglePick = i => {
+  const k = 'picks-' + current.id, p = JSON.parse(localStorage.getItem(k) || '[]');
+  const n = p.includes(i) ? p.filter(x => x !== i) : p.length < 3 ? [...p, i] : p;
+  localStorage.setItem(k, JSON.stringify(n)); renderTomorrow();
+};
+window.savePicks = async () => {
+  const p = JSON.parse(localStorage.getItem('picks-' + current.id) || '[]');
+  const body = JSON.stringify({ after: current.id, picks: p.map(i => current.meta.next[i]) }, null, 2);
+  const file = new File([body], 'tomorrow.json', { type: 'application/json' });
+  if (navigator.canShare?.({ files: [file] })) return navigator.share({ files: [file] }).catch(() => {});
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(file), download: 'tomorrow.json' }); a.click();
+};
+
+audio.ontimeupdate = () => {
+  if (!current) return;
+  const t = audio.currentTime, d = audio.duration || current.meta?.duration || 0;
+  localStorage.setItem('pos-' + current.id, t);
+  $('seek').max = d; $('seek').value = t;
+  $('tNow').textContent = fmt(t); $('tLeft').textContent = '-' + fmt(d - t);
+  const chs = current.meta?.chapters || [];
+  const idx = chs.findLastIndex(c => c.start <= t + .5);
+  document.querySelectorAll('.ch').forEach(b => b.classList.toggle('on', +b.dataset.i === idx));
+};
+audio.onplay = audio.onpause = () => { const s = audio.paused ? '▶' : '❚❚'; $('play').textContent = s; $('miniPlay').textContent = audio.paused ? '▶' : '❚❚'; };
+audio.onended = () => { localStorage.setItem('done-' + current.id, 1); localStorage.setItem('pos-' + current.id, 0); render(); };
+
+$('seek').oninput = e => audio.currentTime = +e.target.value;
+$('play').onclick = $('miniPlay').onclick = e => { e.stopPropagation(); audio.paused ? audio.play() : audio.pause(); };
+$('back').onclick = () => audio.currentTime -= 15;
+$('fwd').onclick = () => audio.currentTime += 30;
+$('close').onclick = () => { $('sheet').classList.remove('open'); render(); };
+$('mini').onclick = () => $('sheet').classList.add('open');
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.setActionHandler('seekbackward', () => audio.currentTime -= 15);
+  navigator.mediaSession.setActionHandler('seekforward', () => audio.currentTime += 30);
+}
+</script>
+</body>
+</html>

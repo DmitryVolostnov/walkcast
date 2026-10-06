@@ -1,0 +1,359 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03F96F41D25F637D86ED5C3A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CB84E7847AB702A0C63A49 /* ContentView.swift */; };
+		0BD0B77CFB5D6CAA2AC2EA0F /* lounge-1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 1AC68251B7DDF5E4FA93EE7B /* lounge-1.m4a */; };
+		14FA6930802BC579A25B3731 /* calm-3.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 2B4882EA3E0E6C04EBB682BB /* calm-3.m4a */; };
+		16E89E259F542FA6CE1F50B7 /* lounge-2.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 7ABAB90004C28F996640EFC0 /* lounge-2.m4a */; };
+		2CCE7EFA33AE3130077757E7 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE2B5D79ECB2274E8BB4010 /* Player.swift */; };
+		46EDB95D9C87668D5541EA13 /* lounge-3.m4a in Resources */ = {isa = PBXBuildFile; fileRef = F90DCF73D26D01AF89CDCF62 /* lounge-3.m4a */; };
+		506CDB0E76F0D517AB7FFF60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E450F223E9023FE06F8095E0 /* Assets.xcassets */; };
+		55750B9A4150E1AE4CF903EF /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5CCB4C2A80BB8517AB72D86 /* Library.swift */; };
+		90628302689418A65AF81A7D /* calm-1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 90CE45AC32613E0A4A0D31C2 /* calm-1.m4a */; };
+		CBCFBD82FB4BB11B2AE714A8 /* lounge-4.m4a in Resources */ = {isa = PBXBuildFile; fileRef = CEF0350C9A76331681E434CF /* lounge-4.m4a */; };
+		F3A94C4B7FD59AB62AF79D62 /* calm-2.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 396C6A103AB1CF526827C014 /* calm-2.m4a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1AC68251B7DDF5E4FA93EE7B /* lounge-1.m4a */ = {isa = PBXFileReference; path = "lounge-1.m4a"; sourceTree = "<group>"; };
+		2B4882EA3E0E6C04EBB682BB /* calm-3.m4a */ = {isa = PBXFileReference; path = "calm-3.m4a"; sourceTree = "<group>"; };
+		2BF905F6E6F2578C38806AB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		396C6A103AB1CF526827C014 /* calm-2.m4a */ = {isa = PBXFileReference; path = "calm-2.m4a"; sourceTree = "<group>"; };
+		7ABAB90004C28F996640EFC0 /* lounge-2.m4a */ = {isa = PBXFileReference; path = "lounge-2.m4a"; sourceTree = "<group>"; };
+		90CE45AC32613E0A4A0D31C2 /* calm-1.m4a */ = {isa = PBXFileReference; path = "calm-1.m4a"; sourceTree = "<group>"; };
+		C406C859C13EB614095B06D9 /* WalkCast.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAE2B5D79ECB2274E8BB4010 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		CEF0350C9A76331681E434CF /* lounge-4.m4a */ = {isa = PBXFileReference; path = "lounge-4.m4a"; sourceTree = "<group>"; };
+		E0CB84E7847AB702A0C63A49 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E450F223E9023FE06F8095E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F5CCB4C2A80BB8517AB72D86 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
+		F90DCF73D26D01AF89CDCF62 /* lounge-3.m4a */ = {isa = PBXFileReference; path = "lounge-3.m4a"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		77949753F45AA2A2409BA3CE = {
+			isa = PBXGroup;
+			children = (
+				897E5D3944F75359DEBBEBC6 /* WalkCast */,
+				F2057C62C1723AFAC9B0D7DF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		897E5D3944F75359DEBBEBC6 /* WalkCast */ = {
+			isa = PBXGroup;
+			children = (
+				E450F223E9023FE06F8095E0 /* Assets.xcassets */,
+				E0CB84E7847AB702A0C63A49 /* ContentView.swift */,
+				2BF905F6E6F2578C38806AB3 /* Info.plist */,
+				F5CCB4C2A80BB8517AB72D86 /* Library.swift */,
+				CAE2B5D79ECB2274E8BB4010 /* Player.swift */,
+				C2DDFD5F51675A5BBCFED634 /* Music */,
+			);
+			path = WalkCast;
+			sourceTree = "<group>";
+		};
+		C2DDFD5F51675A5BBCFED634 /* Music */ = {
+			isa = PBXGroup;
+			children = (
+				90CE45AC32613E0A4A0D31C2 /* calm-1.m4a */,
+				396C6A103AB1CF526827C014 /* calm-2.m4a */,
+				2B4882EA3E0E6C04EBB682BB /* calm-3.m4a */,
+				1AC68251B7DDF5E4FA93EE7B /* lounge-1.m4a */,
+				7ABAB90004C28F996640EFC0 /* lounge-2.m4a */,
+				F90DCF73D26D01AF89CDCF62 /* lounge-3.m4a */,
+				CEF0350C9A76331681E434CF /* lounge-4.m4a */,
+			);
+			path = Music;
+			sourceTree = "<group>";
+		};
+		F2057C62C1723AFAC9B0D7DF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C406C859C13EB614095B06D9 /* WalkCast.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2D49E94FB1624031BEFAE928 /* WalkCast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E71F5FA69B79A55CD8560FCA /* Build configuration list for PBXNativeTarget "WalkCast" */;
+			buildPhases = (
+				D41786391CFAA416190877BD /* Sources */,
+				E8A5ECA54450CCD23CEB308F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WalkCast;
+			packageProductDependencies = (
+			);
+			productName = WalkCast;
+			productReference = C406C859C13EB614095B06D9 /* WalkCast.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		529A01DEB386C823B827808D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					2D49E94FB1624031BEFAE928 = {
+						DevelopmentTeam = CYHGQ2574W;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = DD696A74A013ADB53EBC4B94 /* Build configuration list for PBXProject "WalkCast" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 77949753F45AA2A2409BA3CE;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F2057C62C1723AFAC9B0D7DF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2D49E94FB1624031BEFAE928 /* WalkCast */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E8A5ECA54450CCD23CEB308F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				506CDB0E76F0D517AB7FFF60 /* Assets.xcassets in Resources */,
+				90628302689418A65AF81A7D /* calm-1.m4a in Resources */,
+				F3A94C4B7FD59AB62AF79D62 /* calm-2.m4a in Resources */,
+				14FA6930802BC579A25B3731 /* calm-3.m4a in Resources */,
+				0BD0B77CFB5D6CAA2AC2EA0F /* lounge-1.m4a in Resources */,
+				16E89E259F542FA6CE1F50B7 /* lounge-2.m4a in Resources */,
+				46EDB95D9C87668D5541EA13 /* lounge-3.m4a in Resources */,
+				CBCFBD82FB4BB11B2AE714A8 /* lounge-4.m4a in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D41786391CFAA416190877BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03F96F41D25F637D86ED5C3A /* ContentView.swift in Sources */,
+				55750B9A4150E1AE4CF903EF /* Library.swift in Sources */,
+				2CCE7EFA33AE3130077757E7 /* Player.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		30C5101614CEA2702B3C9593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = CYHGQ2574W;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4FB31B354189F6215FF9AE0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WalkCast/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WalkCast;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = DmitryVolostnov.WalkCast;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		86CEE5553963EAE8CDA44985 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = CYHGQ2574W;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		986262B27BED7FA01C2A7E2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WalkCast/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WalkCast;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = DmitryVolostnov.WalkCast;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DD696A74A013ADB53EBC4B94 /* Build configuration list for PBXProject "WalkCast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				86CEE5553963EAE8CDA44985 /* Debug */,
+				30C5101614CEA2702B3C9593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E71F5FA69B79A55CD8560FCA /* Build configuration list for PBXNativeTarget "WalkCast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				986262B27BED7FA01C2A7E2F /* Debug */,
+				4FB31B354189F6215FF9AE0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 529A01DEB386C823B827808D /* Project object */;
+}

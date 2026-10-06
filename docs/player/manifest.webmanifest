@@ -1,0 +1,9 @@
+{
+  "name": "WalkCast",
+  "short_name": "WalkCast",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#f2f2f7",
+  "icons": [{ "src": "../icon.png", "sizes": "512x512", "type": "image/png" }]
+}
