@@ -31,13 +31,13 @@ struct ContentView: View {
                     ContentUnavailableView {
                         Label("Выбери папку", systemImage: "folder")
                     } description: {
-                        Text("iCloud Drive → WalkCast. Туда Мак каждый вечер кладёт новый выпуск.")
+                        Text("iCloud Drive → WalkCast. Туда Мак каждую ночь кладёт новый выпуск.")
                     } actions: {
                         Button("Выбрать папку") { pickingFolder = true }.buttonStyle(.borderedProminent)
                     }
                 } else if library.episodes.isEmpty {
                     ContentUnavailableView("Пока пусто", systemImage: "headphones",
-                                           description: Text(library.isSyncing ? "Загружаю из iCloud…" : "Первый выпуск появится после 19:00."))
+                                           description: Text(library.isSyncing ? "Загружаю из iCloud…" : "Первый выпуск появится к утру."))
                 } else {
                     List {
                         ForEach(library.episodes) { ep in

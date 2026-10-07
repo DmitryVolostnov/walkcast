@@ -2,9 +2,9 @@
 
 <h1 align="center">WalkCast</h1>
 
-<p align="center"><b>Личный подкаст для вечерней прогулки, который Claude собирает из твоего дня.</b><br>
-Каждый вечер Claude читает, чем ты занимался и о чём думал, пишет выпуск минут на 35 из трёх тем,
-озвучивает и присылает на телефон. Надеваешь наушники и идёшь гулять с собакой.<br>
+<p align="center"><b>Личный подкаст для прогулки, который Claude собирает из твоего дня.</b><br>
+Каждую ночь Claude читает, чем ты занимался и о чём думал вчера, пишет выпуск минут на 35 из трёх тем,
+озвучивает и к утру присылает на телефон. Надеваешь наушники и идёшь гулять с собакой — утром или вечером.<br>
 <a href="https://dmitryvolostnov.github.io/walkcast/">Сайт</a> · <a href="README.md">English</a></p>
 
 <p align="center"><img src="docs/img/list.png" width="260"> &nbsp; <img src="docs/img/player.png" width="260"></p>
@@ -17,7 +17,7 @@
 Set up WalkCast for me: clone https://github.com/DmitryVolostnov/walkcast into ~/WalkCast, then read ~/WalkCast/SETUP.md and follow it step by step.
 ```
 
-Claude спросит имя и пару вещей о тебе, проверит ключ, поставит расписание на 19:00 и даст послушать пробу голоса. На телефоне — iOS-приложение (собирается из `app/` в Xcode) или [веб-плеер](https://dmitryvolostnov.github.io/walkcast/player/): в App Store пока нет.
+Claude спросит имя и пару вещей о тебе, проверит ключ, поставит ночное расписание (04:00) и даст послушать пробу голоса. На телефоне — iOS-приложение (собирается из `app/` в Xcode) или [веб-плеер](https://dmitryvolostnov.github.io/walkcast/player/): в App Store пока нет.
 
 ## Зачем
 
@@ -43,12 +43,12 @@ Claude спросит имя и пару вещей о тебе, провери�
 
 ## Как устроено
 ```
-19:00  задача Claude по расписанию
+04:00  задача Claude по расписанию (про вчерашний день)
        → pipeline/collect.py   дайджест недавних сессий Claude Code (+ твой выбор с телефона)
        → Claude пишет сценарий по pipeline/PROMPT.md  → episodes/ГГГГ-ММ-ДД.md
        → pipeline/tts.py       OpenAI gpt-4o-mini-tts + проигрыш между темами + главы
                                → iCloud Drive/WalkCast/ГГГГ-ММ-ДД.mp3 + .json
-вечер  приложение на айфоне (или веб-плеер) забирает выпуск из iCloud Drive
+прогулка  приложение на айфоне (или веб-плеер) забирает выпуск из iCloud Drive
 ```
 Всё, кроме озвучки, работает локально: Claude читает твои сессии на твоём Маке, в OpenAI уходит только готовый
 текст выпуска. Стоимость: примерно $0.5 за выпуск на голос плюс твой лимит Claude.

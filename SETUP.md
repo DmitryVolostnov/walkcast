@@ -35,16 +35,16 @@ Episodes go to `~/Library/Mobile Documents/com~apple~CloudDocs/WalkCast`. Try `m
 Write a short test script `REPO/pipeline/episodes/0000-test.md` (a `# Title`, one `## Section`, two short paragraphs in the podcast language, addressing the listener by name) and run `python3 tts.py episodes/0000-test.md` from `REPO/pipeline`. It should land in iCloud Drive/WalkCast. Tell the user they can change the voice in `config.json` (`nova` is the default female voice; `ash`, `onyx`, `cedar` are male) — the host persona in PROMPT.md is female, so if they choose a male voice, edit that line too. Delete the test files afterwards (locally and in iCloud).
 
 ## 6. Daily schedule
-Create a daily task at 19:00 local time whose prompt is the content of `REPO/pipeline/TASK.md` with `PIPELINE_DIR` replaced by the absolute path of `REPO/pipeline`.
-- In the Claude desktop app, use the scheduled tasks tool (`create_scheduled_task`, cron `0 19 * * *`). Then ask the user to press **Run now** once in Scheduled, so the tools get approved and the first episode appears in ~10 minutes.
-- Without the desktop app, create a launchd agent that runs `claude -p "<task prompt>" --permission-mode acceptEdits --allowedTools "Bash Read Write Edit WebSearch WebFetch"` from `REPO/pipeline` at 19:00, and run it once now.
+Create a daily task at 04:00 local time (the episode covers the previous day and is ready by morning) whose prompt is the content of `REPO/pipeline/TASK.md` with `PIPELINE_DIR` replaced by the absolute path of `REPO/pipeline`.
+- In the Claude desktop app, use the scheduled tasks tool (`create_scheduled_task`, cron `0 4 * * *`). Then ask the user to press **Run now** once in Scheduled, so the tools get approved and the first episode appears in ~10 minutes.
+- Without the desktop app, create a launchd agent that runs `claude -p "<task prompt>" --permission-mode acceptEdits --allowedTools "Bash Read Write Edit WebSearch WebFetch"` from `REPO/pipeline` at 04:00, and run it once now.
 
-Remind the user: the task runs only while the Mac is on (and, for the desktop app, while Claude is open); missed runs happen on next launch.
+Remind the user: the task runs only while the Mac is awake (and, for the desktop app, while Claude is open); a missed night runs when the Mac wakes up. To keep it on time, they can schedule a wake in System Settings → Energy (or `sudo pmset repeat wakeorpoweron MTWRFSU 03:55:00`) and keep the Mac on power.
 
 ## 7. Listening on the phone
 Offer both, recommend the first if they have Xcode:
 - **iOS app** (`REPO/app`): in `app/project.yml` change `bundleIdPrefix`, `PRODUCT_BUNDLE_IDENTIFIER` and `DEVELOPMENT_TEAM` to the user's own (find the team ID with `security find-identity -v -p codesigning` or ask), run `xcodegen` if installed, open `app/WalkCast.xcodeproj`, build to their iPhone. On first launch pick iCloud Drive → WalkCast. New episodes, chapters, background music and "what's tomorrow" picks work automatically.
-- **Web player, no Xcode**: on the iPhone open https://dmitryvolostnov.github.io/walkcast/player/ in Safari → Share → Add to Home Screen. Each evening tap ＋ and pick the new `.mp3` and `.json` from iCloud Drive → WalkCast. Tomorrow's picks are saved as `tomorrow.json` via Share → Save to Files → WalkCast.
+- **Web player, no Xcode**: on the iPhone open https://dmitryvolostnov.github.io/walkcast/player/ in Safari → Share → Add to Home Screen. Each morning tap ＋ and pick the new `.mp3` and `.json` from iCloud Drive → WalkCast. Tomorrow's picks are saved as `tomorrow.json` via Share → Save to Files → WalkCast.
 
 ## 8. Wrap up
 Summarise in a few lines: when the first episode arrives, where to tweak things (`pipeline/state/notes.md` for wishes, `pipeline/topics.md` for the topic pool, `pipeline/config.json` for voice and sources), and that the shared/family mode is a disabled source in `config.json`.

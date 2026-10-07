@@ -2,9 +2,9 @@
 
 <h1 align="center">WalkCast</h1>
 
-<p align="center"><b>A personal podcast for your evening walk, made by Claude from your own day.</b><br>
-Every evening Claude reads what you worked on and thought about, writes a ~35-minute episode on three topics,
-voices it and drops it on your phone. You put on headphones and take the dog out.<br>
+<p align="center"><b>A personal podcast for your walk, made by Claude from your own day.</b><br>
+Every night Claude reads what you worked on and thought about yesterday, writes a ~35-minute episode on three topics,
+voices it and drops it on your phone by morning. You put on headphones and take the dog out — morning or evening.<br>
 <a href="https://dmitryvolostnov.github.io/walkcast/">Website</a> · <a href="README.ru.md">По-русски</a></p>
 
 <p align="center"><img src="docs/img/list.png" width="260"> &nbsp; <img src="docs/img/player.png" width="260"></p>
@@ -17,7 +17,7 @@ You need a Mac, the [Claude desktop app](https://claude.ai/download) (or Claude 
 Set up WalkCast for me: clone https://github.com/DmitryVolostnov/walkcast into ~/WalkCast, then read ~/WalkCast/SETUP.md and follow it step by step.
 ```
 
-Claude asks your name and a few things about you, checks the key, sets up the 19:00 schedule and plays you a voice sample. On the phone, use the iOS app (build from `app/` with Xcode) or the [web player](https://dmitryvolostnov.github.io/walkcast/player/) — no App Store yet.
+Claude asks your name and a few things about you, checks the key, sets up the nightly schedule (04:00) and plays you a voice sample. On the phone, use the iOS app (build from `app/` with Xcode) or the [web player](https://dmitryvolostnov.github.io/walkcast/player/) — no App Store yet.
 
 ## Why
 
@@ -44,12 +44,12 @@ Feedback is welcome in [Issues](https://github.com/DmitryVolostnov/walkcast/issu
 
 ## How it works
 ```
-19:00  Claude scheduled task
+04:00  Claude scheduled task (yesterday's day)
        → pipeline/collect.py   digest of recent Claude Code sessions (+ your picks from the phone)
        → Claude writes the script by pipeline/PROMPT.md  → episodes/YYYY-MM-DD.md
        → pipeline/tts.py       OpenAI gpt-4o-mini-tts + chime between topics + chapters
                                → iCloud Drive/WalkCast/YYYY-MM-DD.mp3 + .json
-evening  iPhone app (or web player) picks it up from iCloud Drive
+walk   iPhone app (or web player) picks it up from iCloud Drive
 ```
 Everything except the voice runs locally. Your sessions are read by Claude on your Mac; only the finished script
 is sent to OpenAI for voicing. Cost: about $0.5 per episode for the voice, plus your Claude usage.
