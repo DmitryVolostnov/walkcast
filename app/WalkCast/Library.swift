@@ -19,12 +19,19 @@ struct Episode: Identifiable, Hashable {
     var duration: TimeInterval
     var chapters: [Chapter] = []
     var next: [Candidate] = []
+    /// nil — файл скачан и готов; иначе текст состояния («Скачивается из iCloud…»)
+    var status: String? = nil
 
+    var isReady: Bool { status == nil }
     var date: Date? { Library.dateFormatter.date(from: id) }
 }
 
 /// Эпизоды из папки iCloud Drive/WalkCast. Файлы копируются в Documents,
 /// чтобы играть офлайн и не держать security-scoped доступ во время прогулки.
+///
+/// Главное правило: синхронизация никогда не блокируется надолго. Если файл ещё
+/// не скачан из iCloud, мы просим систему его скачать, показываем карточку со
+/// статусом и возвращаемся позже, а не висим со спиннером.
 @Observable
 final class Library {
     static let dateFormatter: DateFormatter = {
@@ -39,6 +46,8 @@ final class Library {
     var hasFolder: Bool { UserDefaults.standard.data(forKey: bookmarkKey) != nil }
 
     private let bookmarkKey = "sourceFolderBookmark"
+    private var pendingStatus: [String: String] = [:]
+    private var retryTask: Task<Void, Never>?
     private let localDir: URL = {
         let dir = URL.documentsDirectory.appending(path: "Episodes")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -56,32 +65,50 @@ final class Library {
         Task { await sync() }
     }
 
+    // MARK: Синхронизация
+
     @MainActor
     func sync() async {
         guard let data = UserDefaults.standard.data(forKey: bookmarkKey), !isSyncing else { return }
         isSyncing = true
         lastError = nil
         let localDir = localDir
-        let result: Result<Void, Error> = await Task.detached {
-            var stale = false
-            let folder = try URL(resolvingBookmarkData: data, bookmarkDataIsStale: &stale)
-            guard folder.startAccessingSecurityScopedResource() else {
-                throw CocoaError(.fileReadNoPermission)
-            }
-            defer { folder.stopAccessingSecurityScopedResource() }
-            if stale, let fresh = try? folder.bookmarkData() {
-                UserDefaults.standard.set(fresh, forKey: "sourceFolderBookmark")
-            }
-            try Self.copyNew(from: folder, to: localDir)
-        }.result
-        if case .failure(let error) = result { lastError = error.localizedDescription }
+        let result = await Task.detached { try Self.pull(bookmark: data, into: localDir) }.result
+        switch result {
+        case .success(let pending):
+            pendingStatus = pending
+        case .failure(let error):
+            lastError = error.localizedDescription
+        }
         loadLocal()
         isSyncing = false
+        scheduleRetryIfNeeded()
     }
 
-    /// Не скачанные из iCloud файлы видны как «.имя.icloud» — NSFileCoordinator докачивает их.
-    private static func copyNew(from folder: URL, to localDir: URL) throws {
+    /// Пока что-то ещё качается, пробуем снова каждые 20 секунд (только пока приложение открыто).
+    @MainActor
+    private func scheduleRetryIfNeeded() {
+        retryTask?.cancel()
+        guard !pendingStatus.isEmpty else { return }
+        retryTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(20))
+            guard !Task.isCancelled else { return }
+            await self?.sync()
+        }
+    }
+
+    /// Возвращает статусы эпизодов, которые ещё не скачались: id → текст.
+    private static func pull(bookmark: Data, into localDir: URL) throws -> [String: String] {
+        var stale = false
+        let folder = try URL(resolvingBookmarkData: bookmark, bookmarkDataIsStale: &stale)
+        guard folder.startAccessingSecurityScopedResource() else { throw CocoaError(.fileReadNoPermission) }
+        defer { folder.stopAccessingSecurityScopedResource() }
+        if stale, let fresh = try? folder.bookmarkData() {
+            UserDefaults.standard.set(fresh, forKey: "sourceFolderBookmark")
+        }
+
         let fm = FileManager.default
+        // Не скачанные файлы на некоторых системах видны как «.имя.icloud» — приводим к настоящему имени
         let names = try fm.contentsOfDirectory(atPath: folder.path).map { name in
             name.hasPrefix(".") && name.hasSuffix(".icloud")
                 ? String(name.dropFirst().dropLast(".icloud".count)) : name
@@ -91,28 +118,78 @@ final class Library {
         for local in (try? fm.contentsOfDirectory(atPath: localDir.path)) ?? [] where !remote.contains(local) {
             try? fm.removeItem(at: localDir.appending(path: local))
         }
-        for name in names where name.hasSuffix(".mp3") || name.hasSuffix(".json") {
+
+        var pending: [String: String] = [:]
+        // Сначала маленькие json (чтобы карточка появилась сразу), потом mp3
+        let wanted = names.filter { $0.hasSuffix(".json") && $0 != "tomorrow.json" } + names.filter { $0.hasSuffix(".mp3") }
+        for name in wanted {
             let dest = localDir.appending(path: name)
-            if fm.fileExists(atPath: dest.path) && name.hasSuffix(".mp3") { continue }
+            if name.hasSuffix(".mp3") && fm.fileExists(atPath: dest.path) { continue }
             let src = folder.appending(path: name)
-            var coordError: NSError?
-            var copyError: Error?
-            NSFileCoordinator().coordinate(readingItemAt: src, options: [], error: &coordError) { readURL in
-                do {
-                    try? fm.removeItem(at: dest)
-                    try fm.copyItem(at: readURL, to: dest)
-                } catch { copyError = error }
+            let id = String(name.prefix(while: { $0 != "." }))
+            switch fetch(src, to: dest, timeout: name.hasSuffix(".mp3") ? 60 : 10) {
+            case .done:
+                break
+            case .downloading:
+                if name.hasSuffix(".mp3") { pending[id] = "Скачивается из iCloud…" }
+            case .failed(let message):
+                if name.hasSuffix(".mp3") { pending[id] = "Не скачалось: \(message)" }
             }
-            if let e = coordError ?? copyError { throw e }
+        }
+        return pending
+    }
+
+    private enum Fetch { case done, downloading, failed(String) }
+
+    /// Копирует файл из iCloud, если он уже скачан; если нет — запускает скачивание
+    /// и ждёт не дольше `timeout`. Никогда не блокируется бесконечно.
+    private static func fetch(_ src: URL, to dest: URL, timeout: TimeInterval) -> Fetch {
+        let deadline = Date().addingTimeInterval(timeout)
+        while true {
+            let values = try? src.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemDownloadingErrorKey, .isUbiquitousItemKey])
+            let isCloud = values?.isUbiquitousItem ?? false
+            let status = values?.ubiquitousItemDownloadingStatus
+            let ready = !isCloud || status == .current || status == .downloaded
+            if ready {
+                return copy(src, to: dest)
+            }
+            if let error = values?.ubiquitousItemDownloadingError {
+                return .failed(error.localizedDescription)
+            }
+            try? FileManager.default.startDownloadingUbiquitousItem(at: src)
+            if Date() > deadline { return .downloading }
+            Thread.sleep(forTimeInterval: 1)
         }
     }
 
+    private static func copy(_ src: URL, to dest: URL) -> Fetch {
+        let fm = FileManager.default
+        var coordError: NSError?
+        var copyError: Error?
+        NSFileCoordinator().coordinate(readingItemAt: src, options: [.withoutChanges], error: &coordError) { readURL in
+            do {
+                let tmp = dest.appendingPathExtension("part")
+                try? fm.removeItem(at: tmp)
+                try fm.copyItem(at: readURL, to: tmp)
+                try? fm.removeItem(at: dest)
+                try fm.moveItem(at: tmp, to: dest)
+            } catch { copyError = error }
+        }
+        if let e = coordError ?? copyError { return .failed(e.localizedDescription) }
+        return .done
+    }
+
+    // MARK: Локальная библиотека
+
     func loadLocal() {
         let files = (try? FileManager.default.contentsOfDirectory(at: localDir, includingPropertiesForKeys: nil)) ?? []
-        episodes = files.filter { $0.pathExtension == "mp3" }.map { mp3 in
-            let id = mp3.deletingPathExtension().lastPathComponent
-            var ep = Episode(id: id, audioURL: mp3, title: id, topics: [], duration: 0)
-            if let data = try? Data(contentsOf: mp3.deletingPathExtension().appendingPathExtension("json")),
+        let ids = Set(files.filter { ["mp3", "json"].contains($0.pathExtension) }.map { $0.deletingPathExtension().lastPathComponent })
+        episodes = ids.map { id in
+            let mp3 = localDir.appending(path: "\(id).mp3")
+            let hasAudio = FileManager.default.fileExists(atPath: mp3.path)
+            var ep = Episode(id: id, audioURL: mp3, title: id, topics: [], duration: 0,
+                             status: hasAudio ? nil : (pendingStatus[id] ?? "Скачивается из iCloud…"))
+            if let data = try? Data(contentsOf: localDir.appending(path: "\(id).json")),
                let meta = try? JSONDecoder().decode(Meta.self, from: data) {
                 ep.title = meta.title
                 ep.topics = meta.topics
@@ -152,7 +229,8 @@ final class Library {
                 }
                 if let e = coordError ?? writeError { throw e }
             } catch {
-                await MainActor.run { self?.lastError = "Не удалось сохранить выбор: \(error.localizedDescription)" }
+                let message = "Не удалось сохранить выбор: \(error.localizedDescription)"
+                await MainActor.run { self?.lastError = message }
             }
         }
     }
@@ -174,6 +252,7 @@ final class Library {
         }
         try? FileManager.default.removeItem(at: episode.audioURL)
         try? FileManager.default.removeItem(at: episode.audioURL.deletingPathExtension().appendingPathExtension("json"))
+        pendingStatus[episode.id] = nil
         loadLocal()
     }
 

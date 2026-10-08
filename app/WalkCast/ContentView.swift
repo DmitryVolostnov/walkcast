@@ -44,7 +44,10 @@ struct ContentView: View {
                             Section {
                                 EpisodeRow(episode: ep)
                                     .contentShape(Rectangle())
-                                    .onTapGesture { player.play(ep); showPlayer = true }
+                                    .onTapGesture {
+                                        if ep.isReady { player.play(ep); showPlayer = true }
+                                        else { Task { await library.sync() } }
+                                    }
                                     .swipeActions {
                                         Button("Удалить", role: .destructive) { library.delete(ep) }
                                     }
@@ -109,7 +112,10 @@ struct EpisodeRow: View {
             ForEach(episode.topics.filter { !["Вступление", "Напоследок"].contains($0) }, id: \.self) { topic in
                 Text("• \(topic)").font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
             }
-            if progress > 0 && progress < 1 {
+            if let status = episode.status {
+                Label(status, systemImage: "icloud.and.arrow.down")
+                    .font(.caption).foregroundStyle(.secondary).padding(.top, 2)
+            } else if progress > 0 && progress < 1 {
                 ProgressView(value: progress).tint(.accentColor)
             }
         }
